@@ -9,7 +9,9 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import type { CreateUserDto, LoginDto, AuthTokens } from '@streamus/shared';
+import { CreateUserDto } from './dto/create-user.dto';
+import { LoginDto } from './dto/login.dto';
+import type { AuthTokens } from '@streamus/shared';
 
 @Controller('auth')
 export class AuthController {

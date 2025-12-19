@@ -48,6 +48,9 @@ tmp/
 temp/
 *.tmp
 
+# Uploads
+uploads/
+
 # Database
 *.db
 *.sqlite
