@@ -3,11 +3,66 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { LiveKitRoom, VideoConference, RoomAudioRenderer } from '@livekit/components-react';
+import { LiveKitRoom, VideoConference, RoomAudioRenderer, useParticipants } from '@livekit/components-react';
 import '@livekit/components-styles';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import StreamHealthMonitor from '@/components/monitoring/StreamHealthMonitor';
+import VideoCompositor from '@/components/compositor/VideoCompositor';
+import LayoutSwitcher from '@/components/compositor/LayoutSwitcher';
+import LiveCommentFeed from '@/components/comments/LiveCommentFeed';
+import CommentModerationPanel from '@/components/comments/CommentModerationPanel';
 import { streamsApi } from '@/lib/api';
+import { Layout, LayoutType, DEFAULT_LAYOUTS, DEFAULT_COMPOSITOR_CONFIG } from '@streamus/shared';
+
+function StreamContent({ streamId }: { streamId: string }) {
+  const participants = useParticipants();
+  const [currentLayout, setCurrentLayout] = useState<Layout>({
+    ...DEFAULT_LAYOUTS[LayoutType.GRID],
+    id: 'default-grid',
+  });
+  const [showModeration, setShowModeration] = useState(false);
+
+  const participantsMap = new Map(
+    participants.map(p => [p.identity, p])
+  );
+
+  return (
+    <>
+      <VideoConference />
+      <RoomAudioRenderer />
+      <VideoCompositor
+        layout={currentLayout}
+        participants={participantsMap}
+        config={DEFAULT_COMPOSITOR_CONFIG}
+      />
+      <LayoutSwitcher
+        currentLayout={currentLayout}
+        onLayoutChange={setCurrentLayout}
+      />
+      <LiveCommentFeed
+        streamId={streamId}
+        maxVisible={3}
+        displayDuration={5000}
+        position="bottom-left"
+        showAuthorImage={true}
+        showSource={true}
+      />
+      
+      <button
+        onClick={() => setShowModeration(!showModeration)}
+        className="fixed bottom-4 right-4 z-40 bg-purple-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-purple-700"
+      >
+        💬 {showModeration ? 'Hide' : 'Show'} Moderation
+      </button>
+
+      {showModeration && (
+        <div className="fixed top-20 right-4 z-40 w-96">
+          <CommentModerationPanel streamId={streamId} />
+        </div>
+      )}
+    </>
+  );
+}
 
 export default function StreamRoomPage() {
   const params = useParams();
@@ -84,12 +139,20 @@ export default function StreamRoomPage() {
               <h1 className="text-white text-lg font-semibold">{stream?.title}</h1>
               <p className="text-gray-400 text-sm">{stream?.description}</p>
             </div>
-            <button
-              onClick={handleDisconnect}
-              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-            >
-              Leave Stream
-            </button>
+            <div className="flex space-x-3">
+              <Link
+                href={`/stream/${streamId}/destinations`}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center"
+              >
+                🔗 Manage Destinations
+              </Link>
+              <button
+                onClick={handleDisconnect}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+              >
+                Leave Stream
+              </button>
+            </div>
           </div>
 
           <div className="flex-1">
@@ -111,8 +174,7 @@ export default function StreamRoomPage() {
               }}
               className="h-full"
             >
-              <VideoConference />
-              <RoomAudioRenderer />
+              <StreamContent streamId={streamId} />
             </LiveKitRoom>
           </div>
         </div>

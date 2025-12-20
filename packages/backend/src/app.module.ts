@@ -8,6 +8,8 @@ import { UsersModule } from './users/users.module';
 import { LiveKitModule } from './livekit/livekit.module';
 import { StreamsModule } from './streams/streams.module';
 import { GuestsModule } from './guests/guests.module';
+import { OAuthModule } from './oauth/oauth.module';
+import { CommentsModule } from './comments/comments.module';
 import { typeOrmConfig } from './config/typeorm.config';
 
 @Module({
@@ -22,6 +24,8 @@ import { typeOrmConfig } from './config/typeorm.config';
     LiveKitModule,
     StreamsModule,
     GuestsModule,
+    OAuthModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

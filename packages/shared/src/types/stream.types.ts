@@ -1,3 +1,5 @@
+import { LayoutType } from './layout.types';
+
 export enum StreamStatus {
   DRAFT = 'draft',
   SCHEDULED = 'scheduled',
@@ -47,14 +49,6 @@ export interface StreamSettings {
   branding?: BrandingSettings;
   recordingEnabled?: boolean;
   recordingQuality?: string;
-}
-
-export enum LayoutType {
-  GRID = 'grid',
-  SIDEBAR = 'sidebar',
-  PICTURE_IN_PICTURE = 'pip',
-  FULLSCREEN = 'fullscreen',
-  CUSTOM = 'custom',
 }
 
 export interface BrandingSettings {

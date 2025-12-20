@@ -67,6 +67,9 @@ export default function DashboardPage() {
                   <Link href="/settings/branding" className="text-gray-700 hover:text-gray-900 px-3 py-2">
                     Branding
                   </Link>
+                  <Link href="/settings/connections" className="text-gray-700 hover:text-gray-900 px-3 py-2">
+                    Connections
+                  </Link>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
@@ -153,16 +156,15 @@ export default function DashboardPage() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {streams.map((stream) => (
-                  <Link
+                  <div
                     key={stream.id}
-                    href={`/stream/${stream.id}`}
-                    className="block p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition"
+                    className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition"
                   >
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">{stream.title}</h3>
                     <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                       {stream.description || 'No description'}
                     </p>
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center mb-4">
                       <span className="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-700">
                         {stream.status}
                       </span>
@@ -170,7 +172,21 @@ export default function DashboardPage() {
                         {new Date(stream.createdAt).toLocaleDateString()}
                       </span>
                     </div>
-                  </Link>
+                    <div className="flex gap-2">
+                      <Link
+                        href={`/stream/${stream.id}`}
+                        className="flex-1 px-4 py-2 bg-blue-600 text-white text-center rounded-md hover:bg-blue-700 text-sm"
+                      >
+                        Join Stream
+                      </Link>
+                      <Link
+                        href={`/stream/${stream.id}/destinations`}
+                        className="px-4 py-2 bg-gray-100 text-gray-700 text-center rounded-md hover:bg-gray-200 text-sm"
+                      >
+                        🔗 Destinations
+                      </Link>
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
